@@ -1,0 +1,80 @@
+#############################################################################
+##  Description:
+##  This make file is used to compile all contribution durring the 
+##  project in Term4 2011.
+##  
+##  Code that isnt used in project but in any way have been used in 
+##  developing is put in a different folder with its own Makefile.
+##  
+##  Author: Michal Musialik
+##  Date: 2011-05-18
+##***************************************************************************
+## * Copyright (C) 2011  <Michal Musialik>
+## * 
+## * This program is free software: you can redistribute it and/or
+## * modify it under the terms of the GNU General Public License as published
+## * by the Free Software Foundation, either version 3 of the License, or
+## * (at your option) any later version.
+## * 
+## * This program is distributed in the hope that it will be useful,
+## * but WITHOUT ANY WARRANTY; without even the implied warranty of
+## * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## * GNU General Public License for more details.
+## * 
+## * You should have received a copy of the GNU General Public License
+## * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+## *
+## ****************************************************************************/
+##############################################################################
+
+OBJSER	= $(SRC)main.c $(SRC)conn_tcpserver_main.c $(SRC)conn_tcpserver.c $(SRC)conn_ui_mask.c 
+OBJCLI	= $(SRC)conn_frame.c $(SRC)conn_tcpclient.c $(SRC)conn_tcpclient_main.c
+OBJTER	= $(SRC)conn_tcpclient.c $(SRC)conn_tcpclient_main.c $(SRC)client_main.c
+GUIFLAG	= `pkg-config --cflags --libs gtk+-2.0` 
+BIN	= bin/
+SRC	= src/
+CAM	= src/udp_cam/
+GCC 	= gcc
+RM 	= rm -f
+
+default:
+	@echo "frame to compile gui and client "
+	@echo "frame_dgb debug mode"
+	@echo "server to compile a server"
+	@echo "server_dbg debug mode "
+	@echo "camera_server"
+	@echo "camera_client"
+
+
+.SILENT:
+
+#Client only in terminal
+client: $(OBJTER)
+	$(GCC) $(OBJTER) -o $(BIN)client
+#Creating Gui frame together with client
+frame: $(OBJCLI)
+	$(GCC) $(OBJCLI) -o $(BIN)frame $(GUIFLAG)
+
+#Creating Gui frame together with client with debug
+frame_dbg:$(OBJCLI)
+	$(GCC) $(OBJCLI) -DDEBUG -DDEBUG_NR2 -o $(BIN)frame_dbg $(GUIFLAG)
+
+#Creating server with mask that is used in moto module
+server: $(OBJSER)
+	$(GCC) $(OBJSER) -o $(BIN)server
+
+#Creating server with mask that is used in moto module with debug
+server_dbg: $(OBJSER)
+	$(GCC) $(OBJSER) -DDEBUG_NR2 -DDEBUG  -o $(BIN)server_dbg
+
+#Cleaning bins
+clean:
+	cd $(BIN) && $(RM) * 
+
+#Creating cam cleint with udp using ffmpeg
+camera_client:
+	cd $(CAM) && $(GCC) conn_udpclient_main.c -o ../../$(BIN)udpc
+
+#creating cam server that starts ffserver and ffmpeg for sending data
+camera_server: 
+	cd $(CAM) && $(GCC) conn_udpserver_main.c -o ../../$(BIN)udps

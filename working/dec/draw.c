@@ -1,0 +1,26 @@
+#include <gtk/gtk.h> 
+#include <gdk/gdk.h>
+#include <stdio.h>
+int main ( int argc, 
+	   char **argv ) 
+{ 
+  GtkWidget *window; 
+  GtkWidget *widget; 
+  GdkGC *gc; 
+
+
+  gtk_init (&argc, &argv); 
+  window = gtk_window_new (GTK_WINDOW_TOPLEVEL); 
+
+  gc=gdk_gc_new(GDK_DRAWABLE(widget->window));
+  gdk_draw_line (GDK_DRAWABLE(widget->window),gc,10,10,50,50); 
+
+
+  gtk_widget_show_all (window); 
+
+
+  gtk_main (); 
+
+  return 0; 
+
+}
