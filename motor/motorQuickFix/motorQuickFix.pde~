@@ -15,9 +15,10 @@ Servo escRight;
 Servo escLeft;
 Servo escFront;
 Servo escRear;
+int incomingByte = 0;	
 
 void setup(void){
-
+Serial.begin(9600);
     /*Attach correct motor pin to corresponding ESC object*/
     escRight.attach(MOTOR_PIN_RIGHT);
     escLeft.attach(MOTOR_PIN_LEFT);
@@ -40,27 +41,37 @@ void setup(void){
     escLeft.write(MIN_THROTTLE);
     escFront.write(MIN_THROTTLE);
     escRear.write(MIN_THROTTLE);
-    delay(15000);
+    delay(10000);
     
     /*go!!!*/
     //moto_run();   
 }
 
 void loop(void){
+  
+  Serial.println("Can send data");
+if (Serial.available() > 0) {
+		// read the incoming byte:
+		incomingByte = Serial.read();
+
+		// say what you got:
+		Serial.print("I received: ");
+		Serial.println(incomingByte, DEC);
+	}
     /*while loop will get motor speed to idle up and down*/
-    while(1){
+    
         escRight.write(IDLE_THROTTLE);
         escLeft.write(IDLE_THROTTLE);
         escFront.write(IDLE_THROTTLE);
         escRear.write(IDLE_THROTTLE);
         
-        delay(5000);
+      //  delay(1000);
         
         escRight.write(IDLE_THROTTLE+100);
         escLeft.write(IDLE_THROTTLE+100);
         escFront.write(IDLE_THROTTLE+100);
         escRear.write(IDLE_THROTTLE+100);
         
-        delay(5000);
-    }
+  //      delay(1000);
+    
 }
